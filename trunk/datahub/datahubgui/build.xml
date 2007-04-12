@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<project name="datahub" default="all" basedir="..">
+	<!-- debugmode = on/off -->
+	<property name="debugmode" value="on"/>
+	<property name="src" value="datahubcore/src/"/>
+	<property name="bin" value="bin/"/>
+	<property name="guisrc" value="datahubgui/src/"/>
+	<property name="corejar" value="datahubcore.jar"/>
+	<property name="destjar" value="datahub.jar"/>
+	<property name="runguiclass" value="net.lizhao.datahub.gui.Main"/>
+	<target name="init">
+		<mkdir dir="${bin}"/>
+	</target>
+
+	<target name="all" depends="build, jar" description="Main target">
+		<echo>
+            Building the .jar file.
+        </echo>
+	</target>
+
+	<target name="build" description="Compilation target" depends="init">
+		<javac debug="${debugmode}" srcdir="${guisrc}" destdir="${bin}">
+			<classpath>
+				<!-- use the value of the ${classpath} property in the classpath -->
+				<pathelement path="${classpath}"/>
+				<!-- include all jar files  -->
+				<fileset dir="${basedir}">
+					<include name="${corejar}"/>
+				</fileset>
+			</classpath>
+		</javac>
+		<!-- copy all globalization property files from ${src} to ${bin}  -->
+		<copy todir="${bin}/">
+			<fileset dir="${guisrc}" includes="**/*.properties"/>
+		</copy>
+
+	</target>
+
+	<target name="jar" description="Compression target">
+		<jar jarfile="${destjar}" basedir="${bin}" >
+			<manifest>
+				<attribute name="Main-Class" value="net.lizhao.datahub.gui.Main"/>
+			</manifest>
+		</jar>
+	</target>
+	<target name="clean" description="Removes previous build">
+		<delete verbose="true">
+			<fileset dir="${guisrc}" defaultexcludes="no">
+				<include name="**/*.class"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="gui" depends="jar">
+		<java jar="${destjar}" fork="true"/>
+	</target>
+</project>
