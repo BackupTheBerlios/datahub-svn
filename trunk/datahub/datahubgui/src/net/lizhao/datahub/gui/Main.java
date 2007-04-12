@@ -12,6 +12,7 @@ package net.lizhao.datahub.gui;
 /**
  *
  * @author zhaoli
+ * GUI for datahub
  */
 public class Main {
     
